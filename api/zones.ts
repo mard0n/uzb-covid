@@ -21630,12 +21630,11 @@ export default function handler(req: TypedReq, res: TypedRes) {
       });
     }
   } else {
-    return 'test'
-    // return res.json({
-    //   zones: {
-    //     type: "FeatureCollection",
-    //     features: allZones,
-    //   },
-    // });
+    return res.json({
+      zones: {
+        type: "FeatureCollection",
+        features: allZones,
+      },
+    });
   }
 }
