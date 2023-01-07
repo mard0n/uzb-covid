@@ -10,6 +10,7 @@ import mapboxgl, { GeoJSONSource, Map, Popup } from "mapbox-gl";
 import { bbox as turfBbox, centerOfMass as turfCenterOfMass } from "@turf/turf";
 import { ZoneFeatureCollection } from "../../types/zone";
 import "./Map.css";
+import { useAppStore } from "../../App";
 
 export interface MapComponentProps {
   zones?: ZoneFeatureCollection;
@@ -65,6 +66,16 @@ const MapComponent = forwardRef<any, MapComponentProps>(
     const [lat, setLat] = useState(40.93);
     const [zoom, setZoom] = useState(4);
 
+    const unsub = useAppStore.subscribe((state: any) => {
+      const zoneObj = zones?.features.find(
+        (zone) => zone.properties.id === state.selectedZoneId
+      );
+
+      if (!map.current || !zoneObj) return;
+
+      moveToFitBounds(map.current, zoneObj);
+    });
+
     useImperativeHandle(
       ref,
       () => {
@@ -102,6 +113,9 @@ const MapComponent = forwardRef<any, MapComponentProps>(
         closeButton: false,
         closeOnClick: false,
       });
+      return () => {
+        unsub();
+      };
     }, []);
 
     useEffect(() => {

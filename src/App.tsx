@@ -2,6 +2,13 @@ import { Layout, EmbedLayout } from "./layouts";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./error-page";
 import { ZoneResType } from "./types/zone";
+import create from "zustand";
+
+export const useAppStore = create((set) => ({
+  selectedZoneId: "",
+  setSelectedZoneId: (zoneId: string) =>
+    set(() => ({ selectedZoneId: zoneId })),
+}));
 
 async function rootloader() {
   const urlSearchParams = new URLSearchParams(window.location.search);

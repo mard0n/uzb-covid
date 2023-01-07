@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Outlet, useLoaderData } from "react-router-dom";
 import SwipeableBottomSheet from "react-swipeable-bottom-sheet";
-import { Map } from "../../components";
+import { Map, SearchInput } from "../../components";
 import { ZoneFeatureCollection } from "../../types/zone";
 import "./Layout.css";
+import logo from "../../assets/logo.svg";
 
 interface LayoutProps {}
 
@@ -25,16 +26,24 @@ const Layout: React.FC<LayoutProps> = () => {
   return (
     <>
       <div className="hidden md:flex h-screen w-screen ">
-        <div className="w-[min(45vw,600px)] z-10 h-full shadow-[0px_4px_40px_rgba(0,30,89,0.09)]">
-          <Outlet />
+        <div className="w-[min(45vw,600px)] z-10 h-full shadow-[0px_4px_40px_rgba(0,30,89,0.09)] px-10 py-6">
+          <div className="mb-3 inline-block">
+            <Link to="/">
+              <img src={logo} alt="CovidUz" />
+            </Link>
+          </div>
+          <div>
+            <SearchInput data={zones} />
+          </div>
         </div>
         <div className="grow h-full relative">
           <Map zones={zones} applyLayerZoomFilter={!params.length} />
           {params.length ? (
-            <div className="absolute z-10 top-[10px] right-[10px]">
-              Open big map
-            </div>
+            <></>
           ) : (
+            // <div className="absolute z-10 top-[10px] right-[10px]">
+            //   Open big map
+            // </div>
             <Link className="absolute z-10 top-[10px] right-[10px]" to="/embed">
               Embed
             </Link>
