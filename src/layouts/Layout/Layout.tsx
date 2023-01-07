@@ -44,7 +44,7 @@ const Layout: React.FC<LayoutProps> = () => {
           </div>
           {selectedZone ? (
             <>
-              <div className="flex justify-between">
+              <div className="flex justify-between mb-8">
                 <div>
                   <div className="font-medium text-2xl">
                     {selectedZone.properties.displayName}
@@ -64,6 +64,35 @@ const Layout: React.FC<LayoutProps> = () => {
                   }}
                 >
                   {getZoneStatusProps(selectedZone.properties.status).text}
+                </div>
+              </div>
+              <div>
+                <h3 className="mb-4 text-lg font-medium">Up to this day</h3>
+                <div className="flex gap-4 justify-between">
+                  <div className="p-4 text-center flex-grow rounded-lg bg-[#F0F3FE]">
+                    <p className="text-sm font-medium text-[#2E409E] mb-2">
+                      Infected
+                    </p>
+                    <div className="text-2xl font-medium mb-6 text-[#FF9635]">
+                      {selectedZone.properties.total.infectedNumber}
+                    </div>
+                  </div>
+                  <div className="p-4 text-center flex-grow rounded-lg bg-[#F0F3FE]">
+                    <p className="text-sm font-medium text-[#2E409E] mb-2">
+                      Recovered
+                    </p>
+                    <div className="text-2xl font-medium mb-6 text-[#87D03F]">
+                      {selectedZone.properties.total.recoveredNumber}
+                    </div>
+                  </div>
+                  <div className="p-4 text-center flex-grow rounded-lg bg-[#F0F3FE]">
+                    <p className="text-sm font-medium text-[#2E409E] mb-2">
+                      Deceased
+                    </p>
+                    <div className="text-2xl font-medium mb-6 text-[#FF4967]">
+                      {selectedZone.properties.total.deadNumber}
+                    </div>
+                  </div>
                 </div>
               </div>
             </>
