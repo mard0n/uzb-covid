@@ -1,0 +1,10 @@
+.bottom-sheet-notch {
+  position: absolute;
+  top: 12.5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 37px;
+  height: 5px;
+  background: #e3e3e3;
+  border-radius: 9px;
+}

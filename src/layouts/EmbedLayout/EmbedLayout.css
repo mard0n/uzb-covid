@@ -1,0 +1,11 @@
+.TreeNode .icon {
+  display: inline-block;
+}
+.TreeNode .CheckBox input.checkboxDOM:hover {
+  cursor: pointer;
+}
+
+.FolderTree .EditableName .displayName:hover {
+  cursor: initial;
+  color: initial;
+}
