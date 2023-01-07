@@ -76,7 +76,7 @@ const SearchInput: FC<SearchInputProps> = ({ data }) => {
     });
 
     return (
-      <div>
+      <div className="relative">
         <div className="relative">
           <input
             {...getInputProps({
@@ -90,13 +90,13 @@ const SearchInput: FC<SearchInputProps> = ({ data }) => {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="2"
+              strokeWidth="2"
               stroke="currentColor"
               className="w-6 h-6"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
               />
             </svg>
@@ -105,7 +105,7 @@ const SearchInput: FC<SearchInputProps> = ({ data }) => {
         {isOpen && (
           <ul
             {...getMenuProps()}
-            className="w-ful max-h-[300px] mt-2 shadow-md py-6 rounded-3xl overflow-scroll"
+            className="w-full max-h-[300px] mt-2 shadow-md py-6 rounded-3xl overflow-scroll absolute bg-white"
           >
             <p className="text-xs font-medium uppercase text-[#B5B3C0] mb-3 px-6">
               Search Results

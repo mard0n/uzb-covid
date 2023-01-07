@@ -6,12 +6,19 @@ import { Map, SearchInput } from "../../components";
 import { ZoneFeatureCollection } from "../../types/zone";
 import "./Layout.css";
 import logo from "../../assets/logo.svg";
+import { useAppStore } from "../../App";
+import { getParentZonesString } from "../../utils/getParentZonesString";
+import { getZoneStatusProps } from "../../utils/getZoneStatusProps";
 
 interface LayoutProps {}
 
 const Layout: React.FC<LayoutProps> = () => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const zones = useLoaderData() as ZoneFeatureCollection | undefined;
+  const selectedZoneId = useAppStore((state: any) => state.selectedZoneId);
+  const selectedZone = zones?.features.find(
+    (zone) => zone.properties.id === selectedZoneId
+  );
 
   if (!zones) {
     return <>loading...</>;
@@ -32,9 +39,39 @@ const Layout: React.FC<LayoutProps> = () => {
               <img src={logo} alt="CovidUz" />
             </Link>
           </div>
-          <div>
+          <div className="mb-8">
             <SearchInput data={zones} />
           </div>
+          {selectedZone ? (
+            <>
+              <div className="flex justify-between">
+                <div>
+                  <div className="font-medium text-2xl">
+                    {selectedZone.properties.displayName}
+                  </div>
+                  <div className="text-[#8C93B2]">
+                    {getParentZonesString(selectedZone, zones, [])}
+                  </div>
+                </div>
+                <div
+                  className="px-4 py-2 rounded-md self-start"
+                  style={{
+                    color: getZoneStatusProps(selectedZone.properties.status)
+                      .textInWhiteBg,
+                    backgroundColor: getZoneStatusProps(
+                      selectedZone.properties.status
+                    ).bgColor,
+                  }}
+                >
+                  {getZoneStatusProps(selectedZone.properties.status).text}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div>
+              <div></div>
+            </div>
+          )}
         </div>
         <div className="grow h-full relative">
           <Map zones={zones} applyLayerZoomFilter={!params.length} />

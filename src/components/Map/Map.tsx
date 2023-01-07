@@ -75,6 +75,9 @@ const MapComponent = forwardRef<any, MapComponentProps>(
 
       moveToFitBounds(map.current, zoneObj);
     });
+    const setSelectedZoneId = useAppStore(
+      (state: any) => state.setSelectedZoneId
+    );
 
     useImperativeHandle(
       ref,
@@ -230,7 +233,7 @@ const MapComponent = forwardRef<any, MapComponentProps>(
 
         map.current.on("click", "zones-layer", (e) => {
           if (!map.current || !e.features) return;
-
+          setSelectedZoneId(e.features[0]?.properties?.id);
           moveToFitBounds(map.current, e.features[0]);
         });
       });

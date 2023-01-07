@@ -11,6 +11,17 @@ export type ZoneProperties = {
   parentZoneId: string;
   childZoneIds: string[];
   alias: string[];
+  total: {
+    infectedNumber: string;
+    recoveredNumber: string;
+    deadNumber: string;
+  };
+  history: {
+    date: string;
+    infectedNumber: number;
+    recoveredNumber: number;
+    deadNumber: number;
+  }[];
 };
 
 export type ZoneFeature = Feature<Geometry, ZoneProperties>;
