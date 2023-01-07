@@ -25,7 +25,11 @@ const moveToFitBounds = (map: Map, feature: Feature | FeatureCollection) => {
 const popupGenerator = (feature: Feature) => {
   let statusColor, zoneName, infectedNumber, recoveredNumber, deadNumber;
 
-  const { status, displayName } = feature.properties || {};
+  const { status, displayName, total } = feature.properties || {};
+  let overallStats = total;
+  try {
+    overallStats = JSON.parse(total);
+  } catch (error) {}
 
   switch (status) {
     case "DANGEROUS":
@@ -48,9 +52,15 @@ const popupGenerator = (feature: Feature) => {
       <span class="zone-status-pin" style="background-color: ${statusColor}"></span>
       <h5 class="zone-name" style="color: #242B43">${displayName}</h5>
     </div>
-    <p class="data infected" style="color: #EF7C38">${"Infected: "} ${1000}</p>
-    <p class="data recovered" style="color: #87D03F">${"Recovered: "} ${900}</p>
-    <p class="data dead" style="color: #EA5C73">${"Dead: "} ${20}</p>
+    <p class="data infected" style="color: #EF7C38">${"Infected: "} ${
+    overallStats?.infectedNumber
+  }</p>
+    <p class="data recovered" style="color: #87D03F">${"Recovered: "} ${
+    overallStats?.recoveredNumber
+  }</p>
+    <p class="data dead" style="color: #EA5C73">${"Dead: "} ${
+    overallStats?.deadNumber
+  }</p>
   </div>
   `;
 };

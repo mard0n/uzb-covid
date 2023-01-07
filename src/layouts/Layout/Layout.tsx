@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Outlet, useLoaderData } from "react-router-dom";
 import SwipeableBottomSheet from "react-swipeable-bottom-sheet";
-import { Map, SearchInput } from "../../components";
+import { HistoryGraph, Map, SearchInput } from "../../components";
 import { ZoneFeatureCollection } from "../../types/zone";
 import "./Layout.css";
 import logo from "../../assets/logo.svg";
@@ -66,7 +66,7 @@ const Layout: React.FC<LayoutProps> = () => {
                   {getZoneStatusProps(selectedZone.properties.status).text}
                 </div>
               </div>
-              <div>
+              <div className="mb-8">
                 <h3 className="mb-4 text-lg font-medium">Up to this day</h3>
                 <div className="flex gap-4 justify-between">
                   <div className="p-4 text-center flex-grow rounded-lg bg-[#F0F3FE]">
@@ -94,6 +94,10 @@ const Layout: React.FC<LayoutProps> = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="mb-8">
+                <h3 className="mb-4 text-lg font-medium">Overall Statistics</h3>
+                <HistoryGraph data={selectedZone.properties.history} />
               </div>
             </>
           ) : (
