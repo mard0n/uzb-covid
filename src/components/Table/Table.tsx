@@ -7,22 +7,26 @@ import { getSelectedZoneObjById } from "../../utils/getSelectedZoneObj";
 export interface ChildZonesProps {
   zones: ZoneFeatureCollection;
   selectedZoneId: string;
+  numberOfVisibleChildZones: number;
 }
 
-const ChildZones: React.FC<ChildZonesProps> = ({ zones, selectedZoneId }) => {
+const ChildZones: React.FC<ChildZonesProps> = ({
+  zones,
+  selectedZoneId,
+  numberOfVisibleChildZones = 4,
+}) => {
   const setSelectedZoneId = useAppStore(
     (state: any) => state.setSelectedZoneId
   );
   const selectedZone = getSelectedZoneObjById(selectedZoneId, zones.features);
-  const [numberOfVisibleCells, setNumberOfVisibleCells] = useState(4);
+  const [numberOfVisibleCells, setNumberOfVisibleCells] = useState(
+    numberOfVisibleChildZones
+  );
+
 
   const defaultZone = zones.features.find(
     (zone) => zone?.properties?.alias?.indexOf("Uzbekistan") > -1
   );
-  useEffect(() => {
-    setNumberOfVisibleCells(4);
-    return () => {};
-  }, [selectedZoneId]);
 
   // console.log("selectedZone", selectedZone);
   // console.log("defaultZone", defaultZone);

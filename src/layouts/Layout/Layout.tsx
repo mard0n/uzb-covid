@@ -2,13 +2,20 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Outlet, useLoaderData } from "react-router-dom";
 import SwipeableBottomSheet from "react-swipeable-bottom-sheet";
-import { HistoryGraph, Map, SearchInput, Table } from "../../components";
+import {
+  HistoryGraph,
+  Map,
+  Restrictions,
+  SearchInput,
+  Table,
+} from "../../components";
 import { ZoneFeatureCollection } from "../../types/zone";
 import "./Layout.css";
 import logo from "../../assets/logo.svg";
 import { useAppStore } from "../../App";
 import { getParentZonesString } from "../../utils/getParentZonesString";
 import { getZoneStatusProps } from "../../utils/getZoneStatusProps";
+import virusSvg from "../../assets/virus.svg";
 
 interface LayoutProps {}
 
@@ -100,12 +107,89 @@ const Layout: React.FC<LayoutProps> = () => {
                 <HistoryGraph data={selectedZone.properties.history} />
               </div>
               <div className="mb-8">
-                <Table zones={zones} selectedZoneId={selectedZoneId} />
+                <Restrictions zoneStatus={selectedZone.properties.status} />
+              </div>
+              <div
+                className="mb-8 bg-[#4863F4] rounded-2xl text-white p-4 flex justify-between items-center cursor-pointer"
+                onClick={() => window.open("tel:1003", "_blank")}
+              >
+                <div className="flex">
+                  <div className="mr-4">
+                    <img src={virusSvg} alt="Virus" />
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <div className="font-medium">Feel Covid-19 Symptoms?</div>
+                    <div className="opacity-50 ">
+                      Call COVID 19 online support
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="mb-8">
+                <Table
+                  zones={zones}
+                  selectedZoneId={selectedZoneId}
+                  numberOfVisibleChildZones={4}
+                />
               </div>
             </>
           ) : (
             <div>
-              <div></div>
+              <div className="mb-8">
+                <Table
+                  zones={zones}
+                  selectedZoneId={selectedZoneId}
+                  numberOfVisibleChildZones={100}
+                />
+              </div>
+              <div
+                className="mb-8 bg-[#4863F4] rounded-2xl text-white p-4 flex justify-between items-center cursor-pointer"
+                onClick={() => window.open("tel:1003", "_blank")}
+              >
+                <div className="flex">
+                  <div className="mr-4">
+                    <img src={virusSvg} alt="Virus" />
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <div className="font-medium">Feel Covid-19 Symptoms?</div>
+                    <div className="opacity-50 ">
+                      Call COVID 19 online support
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
           )}
         </div>
