@@ -12,15 +12,15 @@ const Restrictions: FC<RestrictionsProps> = ({ zoneStatus }) => {
       restrictions = [
         {
           type: "RED",
-          message: "Wear a face mask or cloth covering to help protect others",
+          message: "Yuz niqobini doim taqib yuring",
         },
         {
           type: "YELLOW",
-          message: "Avoid participating in large gatherings",
+          message: "Katta yig'ilishlarda qatnashishdan saqlaning",
         },
         {
           type: "YELLOW",
-          message: "Keep social distancing",
+          message: "Ijtimoiy masofani saqlang",
         },
       ];
       break;
@@ -28,15 +28,15 @@ const Restrictions: FC<RestrictionsProps> = ({ zoneStatus }) => {
       restrictions = [
         {
           type: "RED",
-          message: "Wear a face mask or cloth covering to help protect others",
+          message: "Yuz niqobini doim taqib yuring",
         },
         {
           type: "YELLOW",
-          message: "Avoid participating in large gatherings",
+          message: "Katta yig'ilishlarda qatnashishdan saqlaning",
         },
         {
           type: "YELLOW",
-          message: "Keep social distancing",
+          message: "Ijtimoiy masofani saqlang",
         },
       ];
       break;
@@ -44,23 +44,23 @@ const Restrictions: FC<RestrictionsProps> = ({ zoneStatus }) => {
       restrictions = [
         {
           type: "RED",
-          message: "Wear a face mask or cloth covering to help protect others",
+          message: "Yuz niqobini doim taqib yuring",
         },
         {
           type: "RED",
-          message: "Stay at home during the timeframe from 6pm till 10am",
+          message: "Uyda qoling, soat 18:00 dan 10:00 gacha",
         },
         {
           type: "YELLOW",
-          message: "Wear gloves in public places",
+          message: "Jamoat joylarida qo'lqop kiying",
         },
         {
           type: "YELLOW",
-          message: "Avoid participating in large gatherings",
+          message: "Katta yig'ilishlarda qatnashishdan saqlaning",
         },
         {
           type: "YELLOW",
-          message: "Keep social distancing",
+          message: "Ijtimoiy masofani saqlang",
         },
       ];
       break;
@@ -71,7 +71,7 @@ const Restrictions: FC<RestrictionsProps> = ({ zoneStatus }) => {
 
   return (
     <>
-      <h3 className="mb-4 text-lg font-medium">Restrictions</h3>
+      <h3 className="mb-4 text-lg font-medium">Cheklovlar</h3>
       <ul>
         {restrictions.map((restriction) => {
           return (

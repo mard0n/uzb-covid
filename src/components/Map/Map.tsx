@@ -25,7 +25,7 @@ const moveToFitBounds = (map: Map, feature: Feature | FeatureCollection) => {
 const popupGenerator = (feature: Feature) => {
   let statusColor, zoneName, infectedNumber, recoveredNumber, deadNumber;
 
-  const { status, displayName, total } = feature.properties || {};
+  const { status, displayNameUz, total } = feature.properties || {};
   let overallStats = total;
   try {
     overallStats = JSON.parse(total);
@@ -50,7 +50,7 @@ const popupGenerator = (feature: Feature) => {
   <div class='custom-popup-style'>
     <div class='title-container'>
       <span class="zone-status-pin" style="background-color: ${statusColor}"></span>
-      <h5 class="zone-name" style="color: #242B43">${displayName}</h5>
+      <h5 class="zone-name" style="color: #242B43">${displayNameUz}</h5>
     </div>
     <p class="data infected" style="color: #EF7C38">${"Infected: "} ${
     overallStats?.infectedNumber
@@ -70,6 +70,7 @@ mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESSTOKEN;
 const MapComponent = forwardRef<any, MapComponentProps>(
   ({ zones, applyLayerZoomFilter = false }, ref) => {
     const mapContainer = useRef<HTMLDivElement>(null);
+    const mapReady = useRef(false);
     const map = useRef<Map | null>(null);
     const popup = useRef<Popup | null>(null);
     const [lng, setLng] = useState(64.62);
@@ -134,119 +135,135 @@ const MapComponent = forwardRef<any, MapComponentProps>(
     useEffect(() => {
       if (!map.current) return;
       map.current.on("load", () => {
+        mapReady.current = true;
+      });
+
+      if (!map.current || !mapReady.current || !zones) return;
+      map.current.addSource("zones", {
+        type: "geojson",
+        data: zones ?? {
+          type: "FeatureCollection",
+          features: [],
+        },
+      });
+      map.current.addLayer({
+        id: "zones-layer",
+        type: "fill",
+        source: "zones",
+        layout: {},
+        paint: {
+          "fill-color": [
+            "case",
+            ["boolean", ["feature-state", "hover"], false],
+            [
+              "case",
+              ["==", ["get", "status"], "DANGEROUS"],
+              "#FA0303",
+              ["==", ["get", "status"], "RISKY"],
+              "#FAFF00",
+              ["==", ["get", "status"], "SAFE"],
+              "#23FF00",
+              "#23FF00",
+            ],
+            [
+              "case",
+              ["==", ["get", "status"], "DANGEROUS"],
+              "#FB3535",
+              ["==", ["get", "status"], "RISKY"],
+              "#FAFF00",
+              ["==", ["get", "status"], "SAFE"],
+              "#23FD00",
+              "#23FD00",
+            ],
+          ],
+          "fill-opacity": [
+            "case",
+            ["boolean", ["feature-state", "hover"], false],
+            [
+              "case",
+              ["==", ["get", "status"], "DANGEROUS"],
+              0.3,
+              ["==", ["get", "status"], "RISKY"],
+              0.4,
+              ["==", ["get", "status"], "SAFE"],
+              0.5,
+              0.5,
+            ],
+            [
+              "case",
+              ["==", ["get", "status"], "DANGEROUS"],
+              0.2,
+              ["==", ["get", "status"], "RISKY"],
+              0.2,
+              ["==", ["get", "status"], "SAFE"],
+              0.2,
+              0.2,
+            ],
+          ],
+        },
+      });
+
+      let hoveredFeatureId: string | number | undefined | null = null;
+      map.current.on("mousemove", "zones-layer", (e) => {
+        if (!e.features?.length || !map.current) return;
+        const feature = e.features[0];
+
+        if (hoveredFeatureId !== null) {
+          map.current?.setFeatureState(
+            { source: "zones", id: hoveredFeatureId },
+            { hover: false }
+          );
+        }
+        hoveredFeatureId = feature.id;
+        map.current.setFeatureState(
+          { source: "zones", id: hoveredFeatureId },
+          { hover: true }
+        );
+
+        map.current.getCanvas().style.cursor = "pointer";
+        const centerCoordinates = turfCenterOfMass(feature).geometry
+          .coordinates as [number, number];
+        const popupHtml = popupGenerator(feature);
+
+        popup.current
+          ?.setLngLat(centerCoordinates)
+          .setHTML(popupHtml)
+          .addTo(map.current);
+      });
+      map.current.on("mouseleave", "zones-layer", (e) => {
         if (!map.current) return;
-        map.current.addSource("zones", {
-          type: "geojson",
-          data: zones ?? {
-            type: "FeatureCollection",
-            features: [],
-          },
-        });
-        map.current.addLayer({
-          id: "zones-layer",
-          type: "fill",
-          source: "zones",
-          layout: {},
-          paint: {
-            "fill-color": [
-              "case",
-              ["boolean", ["feature-state", "hover"], false],
-              [
-                "case",
-                ["==", ["get", "status"], "DANGEROUS"],
-                "#FA0303",
-                ["==", ["get", "status"], "RISKY"],
-                "#FAFF00",
-                ["==", ["get", "status"], "SAFE"],
-                "#23FF00",
-                "#23FF00",
-              ],
-              [
-                "case",
-                ["==", ["get", "status"], "DANGEROUS"],
-                "#FB3535",
-                ["==", ["get", "status"], "RISKY"],
-                "#FAFF00",
-                ["==", ["get", "status"], "SAFE"],
-                "#23FD00",
-                "#23FD00",
-              ],
-            ],
-            "fill-opacity": [
-              "case",
-              ["boolean", ["feature-state", "hover"], false],
-              [
-                "case",
-                ["==", ["get", "status"], "DANGEROUS"],
-                0.3,
-                ["==", ["get", "status"], "RISKY"],
-                0.4,
-                ["==", ["get", "status"], "SAFE"],
-                0.5,
-                0.5,
-              ],
-              [
-                "case",
-                ["==", ["get", "status"], "DANGEROUS"],
-                0.2,
-                ["==", ["get", "status"], "RISKY"],
-                0.2,
-                ["==", ["get", "status"], "SAFE"],
-                0.2,
-                0.2,
-              ],
-            ],
-          },
-        });
 
-        let hoveredFeatureId: string | number | undefined | null = null;
-        map.current.on("mousemove", "zones-layer", (e) => {
-          if (!e.features?.length || !map.current) return;
-          const feature = e.features[0];
-
-          if (hoveredFeatureId !== null) {
-            map.current?.setFeatureState(
-              { source: "zones", id: hoveredFeatureId },
-              { hover: false }
-            );
-          }
-          hoveredFeatureId = feature.id;
+        if (hoveredFeatureId !== null) {
           map.current.setFeatureState(
             { source: "zones", id: hoveredFeatureId },
-            { hover: true }
+            { hover: false }
           );
+        }
+        hoveredFeatureId = null;
 
-          map.current.getCanvas().style.cursor = "pointer";
-          const centerCoordinates = turfCenterOfMass(feature).geometry
-            .coordinates as [number, number];
-          const popupHtml = popupGenerator(feature);
-
-          popup.current
-            ?.setLngLat(centerCoordinates)
-            .setHTML(popupHtml)
-            .addTo(map.current);
-        });
-        map.current.on("mouseleave", "zones-layer", (e) => {
-          if (!map.current) return;
-
-          if (hoveredFeatureId !== null) {
-            map.current.setFeatureState(
-              { source: "zones", id: hoveredFeatureId },
-              { hover: false }
-            );
-          }
-          hoveredFeatureId = null;
-
-          map.current.getCanvas().style.cursor = "";
-          popup.current?.remove();
-        });
-
-        map.current.on("click", "zones-layer", (e) => {
-          if (!map.current || !e.features) return;
-          setSelectedZoneId(e.features[0]?.properties?.id);
-          moveToFitBounds(map.current, e.features[0]);
-        });
+        map.current.getCanvas().style.cursor = "";
+        popup.current?.remove();
       });
+
+      map.current.on("click", "zones-layer", (e) => {
+        if (!map.current || !e.features) return;
+        setSelectedZoneId(e.features[0]?.properties?.id);
+        moveToFitBounds(map.current, e.features[0]);
+      });
+      // If all zones are shown, apply usual zoom step and placeType based filter
+      applyLayerZoomFilter &&
+        map.current?.setFilter("zones-layer", [
+          "step",
+          ["zoom"],
+          ["==", ["get", "placeType"], "COUNTRY"],
+          5,
+          ["==", ["get", "placeType"], "REGION"],
+          7,
+          ["match", ["get", "placeType"], ["DISTRICT", "CITY"], true, false],
+        ]);
+      // else show all zones. Later on selecting childzone and parent zone should be prevented
+      // to avoid zone overlaps
+      // });
 
       return () => {
         if (map.current?.getSource("zones")) {
@@ -254,26 +271,14 @@ const MapComponent = forwardRef<any, MapComponentProps>(
           map.current.removeSource("zones");
         }
       };
-    }, []);
+    }, [zones]);
 
-    useEffect(() => {
-      map.current?.on("load", () => {
-        // If all zones are shown, apply usual zoom step and placeType based filter
-        applyLayerZoomFilter &&
-          map.current?.setFilter("zones-layer", [
-            "step",
-            ["zoom"],
-            ["==", ["get", "placeType"], "COUNTRY"],
-            5,
-            ["==", ["get", "placeType"], "REGION"],
-            7,
-            ["match", ["get", "placeType"], ["DISTRICT", "CITY"], true, false],
-          ]);
-        // else show all zones. Later on selecting childzone and parent zone should be prevented
-        // to avoid zone overlaps
-      });
-      return () => {};
-    }, [applyLayerZoomFilter]);
+    // useEffect(() => {
+    //   map.current?.on("load", () => {
+
+    //   });
+    //   return () => {};
+    // }, [applyLayerZoomFilter]);
 
     return (
       <div

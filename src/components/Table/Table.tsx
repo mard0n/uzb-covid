@@ -5,7 +5,7 @@ import { getChildZones } from "../../utils/getChildZones";
 import { getSelectedZoneObjById } from "../../utils/getSelectedZoneObj";
 
 export interface ChildZonesProps {
-  zones: ZoneFeatureCollection;
+  zones: ZoneFeatureCollection | undefined;
   selectedZoneId: string;
   numberOfVisibleChildZones: number;
 }
@@ -15,6 +15,9 @@ const ChildZones: React.FC<ChildZonesProps> = ({
   selectedZoneId,
   numberOfVisibleChildZones = 4,
 }) => {
+  if (!zones) {
+    return <></>;
+  }
   const setSelectedZoneId = useAppStore(
     (state: any) => state.setSelectedZoneId
   );
@@ -22,7 +25,6 @@ const ChildZones: React.FC<ChildZonesProps> = ({
   const [numberOfVisibleCells, setNumberOfVisibleCells] = useState(
     numberOfVisibleChildZones
   );
-
 
   const defaultZone = zones.features.find(
     (zone) => zone?.properties?.alias?.indexOf("Uzbekistan") > -1
@@ -41,27 +43,27 @@ const ChildZones: React.FC<ChildZonesProps> = ({
   // console.log("childZones", childZones);
   return childZones.length ? (
     <div className="mt-4 mb-4">
-      <h3 className="mb-4 text-lg font-medium">Sub zones</h3>
+      <h3 className="mb-4 text-lg font-medium">Sub hududlar</h3>
       <div>
         <div className="flex mb-4">
           <div className="w-6/12">
             <p className="whitespace-nowrap overflow-hidden text-ellipsis uppercase text-[#777FA9] text-xs font-medium">
-              Zone name
+              Hudud nomi
             </p>
           </div>
           <div className="w-2/12 ">
             <p className="text-center whitespace-nowrap overflow-hidden text-ellipsis uppercase text-[#777FA9] text-xs font-medium">
-              Infected
+              Kasallangan
             </p>
           </div>
           <div className="w-2/12 ">
             <p className="text-center whitespace-nowrap overflow-hidden text-ellipsis uppercase text-[#777FA9] text-xs font-medium">
-              Recovered
+              Sog'aygan
             </p>
           </div>
           <div className="w-2/12 ">
             <p className="text-center whitespace-nowrap overflow-hidden text-ellipsis uppercase text-[#777FA9] text-xs font-medium">
-              Deceased
+              Vafot etgan
             </p>
           </div>
         </div>
@@ -74,7 +76,7 @@ const ChildZones: React.FC<ChildZonesProps> = ({
                     className="whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer text-[#4863F4] hover:text-[#1a3cf4] font-medium"
                     onClick={() => setSelectedZoneId(zone.properties.id)}
                   >
-                    {zone.properties.displayName}
+                    {zone.properties.displayNameUz}
                   </p>
                 </div>
                 <div className="w-2/12">
@@ -105,7 +107,7 @@ const ChildZones: React.FC<ChildZonesProps> = ({
               setNumberOfVisibleCells(childZones.length);
             }}
           >
-            Show more
+            Ko'proq
           </button>
         </div>
       )}

@@ -6,7 +6,7 @@ import { getZoneStatusProps } from "../../utils/getZoneStatusProps";
 import { useCombobox } from "downshift";
 
 interface SearchInputProps {
-  data: ZoneFeatureCollection;
+  data: ZoneFeatureCollection | undefined;
 }
 
 const SearchInput: FC<SearchInputProps> = ({ data }) => {
@@ -15,7 +15,7 @@ const SearchInput: FC<SearchInputProps> = ({ data }) => {
   );
 
   function ComboBox() {
-    const [items, setItems] = React.useState(data.features);
+    const [items, setItems] = React.useState(data?.features);
     const stateReducer = React.useCallback(
       (state: any, actionAndChanges: any) => {
         const { type, changes } = actionAndChanges;
@@ -57,17 +57,17 @@ const SearchInput: FC<SearchInputProps> = ({ data }) => {
     } = useCombobox({
       onInputValueChange({ inputValue }) {
         setItems(() => {
-          if (!inputValue) return data.features;
-          return data.features.filter((zone) => {
+          if (!inputValue) return data?.features;
+          return data?.features.filter((zone) => {
             return zone.properties.alias.some((name) =>
               name?.toLowerCase().includes(inputValue?.toLowerCase())
             );
           });
         });
       },
-      items,
+      items: items || [],
       itemToString(item) {
-        return item ? item.properties.displayName : "";
+        return item ? item.properties.displayNameUz : "";
       },
       onSelectedItemChange: ({ selectedItem }) => {
         setSelectedZoneId(selectedItem?.properties.id);
@@ -80,7 +80,7 @@ const SearchInput: FC<SearchInputProps> = ({ data }) => {
         <div className="relative">
           <input
             {...getInputProps({
-              placeholder: "Search for the city...",
+              placeholder: "Shahar nomini kiriting...",
               onChange: reset,
             })}
             className="w-full h-12 rounded-full px-4 py-2 pl-12 bg-[#F5F7FD] border-none"
@@ -108,40 +108,46 @@ const SearchInput: FC<SearchInputProps> = ({ data }) => {
             className="w-full max-h-[300px] mt-2 shadow-md py-6 rounded-3xl overflow-scroll absolute bg-white"
           >
             <p className="text-xs font-medium uppercase text-[#B5B3C0] mb-3 px-6">
-              Search Results
+              Qidiruv natijalari
             </p>
-            <div className="flex flex-col gap-4">
-              {items.map((item, index) => (
-                <li
-                  className="flex gap-5 cursor-pointer px-6"
-                  key={`${item.properties.id}${index}`}
-                  style={{
-                    backgroundColor:
-                      highlightedIndex === index ? "#f5f7fd" : "unset",
-                  }}
-                  {...getItemProps({ item, index })}
-                >
-                  <div>
-                    <div
-                      className="h-2 w-2 rounded-full mt-2"
-                      style={{
-                        backgroundColor: getZoneStatusProps(
-                          item.properties.status
-                        ).textInWhiteBg,
-                      }}
-                    ></div>
-                  </div>
-                  <div>
-                    <div className="font-medium text-base">
-                      {item.properties.displayName}
+            {!data?.features ? (
+              "Yuklanmoqda..."
+            ) : !items ? (
+              "Hech qanday natija topilmadi"
+            ) : (
+              <div className="flex flex-col gap-4">
+                {items.map((item, index) => (
+                  <li
+                    className="flex gap-5 cursor-pointer px-6"
+                    key={`${item.properties.id}${index}`}
+                    style={{
+                      backgroundColor:
+                        highlightedIndex === index ? "#f5f7fd" : "unset",
+                    }}
+                    {...getItemProps({ item, index })}
+                  >
+                    <div>
+                      <div
+                        className="h-2 w-2 rounded-full mt-2"
+                        style={{
+                          backgroundColor: getZoneStatusProps(
+                            item.properties.status
+                          ).textInWhiteBg,
+                        }}
+                      ></div>
                     </div>
-                    <div className="text-[#A5A3B2]">
-                      {getParentZonesString(item, data, [])}
+                    <div>
+                      <div className="font-medium text-base">
+                        {item.properties.displayNameUz}
+                      </div>
+                      <div className="text-[#A5A3B2]">
+                        {getParentZonesString(item, data, [])}
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
-            </div>
+                  </li>
+                ))}
+              </div>
+            )}
           </ul>
         )}
       </div>

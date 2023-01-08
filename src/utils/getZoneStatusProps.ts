@@ -7,19 +7,19 @@ export const getZoneStatusProps = (status: "SAFE" | "RISKY" | "DANGEROUS") => {
     case "DANGEROUS":
       textColorInWhite = "#EA5C73";
       textColorInBlue = "#FF4967";
-      text = "Dangerous";
+      text = "Xavfli";
       bgColor = "#ff0c0c26";
       break;
     case "RISKY":
       textColorInWhite = "#EF7C38";
       textColorInBlue = "#FF9635";
-      text = "Risky";
+      text = "Extiyot";
       bgColor = "#ffeb0159";
       break;
     case "SAFE":
       textColorInWhite = "#87D03F";
       textColorInBlue = "#87D03F";
-      text = "Safe";
+      text = "Xavfsiz";
       bgColor = "#8ff8293d";
       break;
     default:

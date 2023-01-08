@@ -9,7 +9,7 @@ export const getParentZonesString = (
     (z) => z.properties?.id === zone.properties?.parentZoneId
   );
   if (parentZone) {
-    parentZoneList.push(parentZone.properties.displayName);
+    parentZoneList.push(parentZone.properties.displayNameUz);
     return getParentZonesString(parentZone, zones, parentZoneList);
   } else {
     return parentZoneList.join(", ");

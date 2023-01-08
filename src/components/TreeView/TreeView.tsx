@@ -19,9 +19,9 @@ export const buildTree = (
       (d) => !d.properties.parentZoneId
     ) as ZoneFeature;
 
-    const { id, displayName, childZoneIds } = topParent?.properties || {};
+    const { id, displayNameUz, childZoneIds } = topParent?.properties || {};
     tree = {
-      name: displayName,
+      name: displayNameUz,
       id,
       children: childZoneIds,
       _path: [],
@@ -39,10 +39,10 @@ export const buildTree = (
     if (!childData)
       return { id: "notfound", name: "child not found", _path: [] };
 
-    const { id, displayName, childZoneIds } = childData?.properties;
+    const { id, displayNameUz, childZoneIds } = childData?.properties;
     const childTreeObj = buildTree(
       data,
-      { id: id, name: displayName, children: childZoneIds, _path: path },
+      { id: id, name: displayNameUz, children: childZoneIds, _path: path },
       [...path, 0]
     );
     childTreeObj._path = [...path];

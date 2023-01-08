@@ -54,19 +54,19 @@ const Chart: React.FC<ChartProps> = ({ data }) => {
         // labels: [...data.map((h) => new Date(h.date))],
         datasets: [
           {
-            label: "Infected",
+            label: "Kasallangan",
             borderColor: getZoneStatusProps("RISKY").textInBlueishBg,
             backgroundColor: getZoneStatusProps("RISKY").textInBlueishBg,
             data: [...data.map((h) => h?.infectedNumber)],
           },
           {
-            label: "Recovered",
+            label: "Sog'aygan",
             borderColor: getZoneStatusProps("SAFE").textInBlueishBg,
             backgroundColor: getZoneStatusProps("SAFE").textInBlueishBg,
             data: [...data.map((h) => h.recoveredNumber)],
           },
           {
-            label: "Deceased",
+            label: "Vafot etgan",
             borderColor: getZoneStatusProps("DANGEROUS").textInBlueishBg,
             backgroundColor: getZoneStatusProps("DANGEROUS").textInBlueishBg,
             data: [...data.map((h) => h.deadNumber)],

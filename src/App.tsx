@@ -1,8 +1,9 @@
 import { Layout, EmbedLayout } from "./layouts";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import ErrorPage from "./error-page";
-import { ZoneResType } from "./types/zone";
+import { ZoneFeatureCollection, ZoneResType } from "./types/zone";
 import create from "zustand";
+import { useEffect, useState } from "react";
 
 export const useAppStore = create((set) => ({
   selectedZoneId: "",
@@ -29,23 +30,59 @@ async function rootloader() {
   }
 }
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Layout />,
-    errorElement: <ErrorPage />,
-    loader: rootloader,
-  },
-  {
-    path: "/embed",
-    element: <EmbedLayout />,
-    errorElement: <ErrorPage />,
-    loader: rootloader,
-  },
-]);
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <Layout />,
+//     errorElement: <ErrorPage />,
+//     loader: rootloader,
+//   },
+//   {
+//     path: "/embed",
+//     element: <EmbedLayout />,
+//     errorElement: <ErrorPage />,
+//     loader: rootloader,
+//   },
+// ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  const [zones, setZones] = useState<ZoneFeatureCollection>();
+
+  const fetchZones = async () => {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = urlSearchParams.getAll("zone");
+
+    if (params.length) {
+      const res: ZoneResType = await fetch(
+        `api/zones?${params.map((p) => "zone=" + p).join("&")}`
+      ).then((res) => res.json());
+      if (res?.zones) {
+        setZones(res.zones);
+        return res.zones;
+      }
+    } else {
+      const res: ZoneResType = await fetch(`api/zones`).then((res) =>
+        res.json()
+      );
+      if (res?.zones) {
+        setZones(res.zones);
+        return res.zones;
+      }
+    }
+  };
+  useEffect(() => {
+    fetchZones();
+    return () => {};
+  }, []);
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" index element={<Layout zones={zones} />} />
+        <Route path="/embed" element={<EmbedLayout />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
