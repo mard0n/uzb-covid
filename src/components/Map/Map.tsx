@@ -271,7 +271,7 @@ const MapComponent = forwardRef<any, MapComponentProps>(
           map.current.removeSource("zones");
         }
       };
-    }, [zones]);
+    }, [zones, mapReady.current]);
 
     // useEffect(() => {
     //   map.current?.on("load", () => {
