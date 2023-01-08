@@ -38,7 +38,6 @@ const Chart: React.FC<ChartProps> = ({ data }) => {
   });
   const canvas = useRef<any>();
   const chart = useRef<Chart>();
-  console.log("date_list", date_list);
 
   useEffect(() => {
     const dataFromRange = getDateRange({
