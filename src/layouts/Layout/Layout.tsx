@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Outlet, useLoaderData } from "react-router-dom";
 import SwipeableBottomSheet from "react-swipeable-bottom-sheet";
-import { HistoryGraph, Map, SearchInput } from "../../components";
+import { HistoryGraph, Map, SearchInput, Table } from "../../components";
 import { ZoneFeatureCollection } from "../../types/zone";
 import "./Layout.css";
 import logo from "../../assets/logo.svg";
@@ -33,7 +33,7 @@ const Layout: React.FC<LayoutProps> = () => {
   return (
     <>
       <div className="hidden md:flex h-screen w-screen ">
-        <div className="w-[min(45vw,600px)] z-10 h-full shadow-[0px_4px_40px_rgba(0,30,89,0.09)] px-10 py-6">
+        <div className="w-[min(45vw,600px)] z-10 h-full overflow-scroll shadow-[0px_4px_40px_rgba(0,30,89,0.09)] px-10 py-6">
           <div className="mb-3 inline-block">
             <Link to="/">
               <img src={logo} alt="CovidUz" />
@@ -98,6 +98,9 @@ const Layout: React.FC<LayoutProps> = () => {
               <div className="mb-8">
                 <h3 className="mb-4 text-lg font-medium">Overall Statistics</h3>
                 <HistoryGraph data={selectedZone.properties.history} />
+              </div>
+              <div className="mb-8">
+                <Table zones={zones} selectedZoneId={selectedZoneId} />
               </div>
             </>
           ) : (
